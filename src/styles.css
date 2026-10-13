@@ -72,10 +72,13 @@ h3 { font-size: clamp(1.5rem, 2.4vw, 2rem); }
 .nav-links a { text-decoration: none; font-size: .92rem; opacity: .85; }
 .nav-links a:hover { opacity: 1; }
 .nav-actions { display: flex; align-items: center; gap: .6rem; }
-.lang {
-  background: transparent; border: 1px solid currentColor; color: inherit; border-radius: 999px;
-  font: 600 .75rem var(--sans); padding: .45rem .7rem; cursor: pointer; opacity: .8;
+.lang-switch { display: flex; border: 1px solid currentColor; border-radius: 999px; padding: 2px; opacity: .9; }
+.lang-switch button {
+  background: transparent; border: 0; color: inherit; border-radius: 999px; cursor: pointer;
+  font: 600 .72rem var(--sans); letter-spacing: .04em; padding: .38rem .55rem; opacity: .7;
 }
+.lang-switch button:hover { opacity: 1; }
+.lang-switch button[aria-pressed="true"] { background: var(--accent); color: #fff; opacity: 1; }
 
 /* Hero */
 .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; color: #fff; overflow: hidden; }

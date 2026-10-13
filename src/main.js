@@ -42,25 +42,83 @@ const EN = {};
 document.querySelectorAll('[data-i18n]').forEach((el) => { EN[el.dataset.i18n] = el.textContent; });
 document.querySelectorAll('[data-i18n-html]').forEach((el) => { EN[el.dataset.i18nHtml] = el.innerHTML; });
 
-const langBtn = document.getElementById('lang');
-function setLang(lang) {
-  const dict = lang === 'bs' ? BS : EN;
+const DE = {
+  'nav.about': 'Über uns', 'nav.rooms': 'Zimmer', 'nav.gallery': 'Galerie', 'nav.location': 'Lage', 'nav.book': 'Jetzt buchen',
+  'hero.eyebrow': 'Kurzaufenthalt · Stadtzentrum Tuzla',
+  'hero.title': 'Ihr ruhiges,<br />modernes Zuhause<br />in Tuzla.',
+  'hero.sub': 'Eine helle Wohnung mit zwei Schlafzimmern im Herzen der Stadt — nur wenige Minuten von den Pannonischen Seen, Restaurants und Geschäften entfernt.',
+  'cta.whatsapp': 'Über WhatsApp buchen', 'cta.explore': 'Wohnung ansehen',
+  'price.from': 'ab', 'price.per': '/ Nacht', 'price.note': 'Bester Preis im Zentrum · begrenzte Termine',
+  'facts.bedrooms': 'Schlafzimmer', 'facts.beds': 'Queen- & Doppelbett', 'facts.sofaTitle': 'Schlafsofa',
+  'facts.sofa': 'im Wohnzimmer', 'facts.centerTitle': 'Zentrum', 'facts.center': 'alles zu Fuß erreichbar',
+  'about.eyebrow': 'Willkommen', 'about.title': 'Komfort, Privatsphäre und eine entspannte Atmosphäre.',
+  'about.p1': 'Ob Sie Tuzla geschäftlich besuchen, einen Kurzurlaub planen oder die Stadt und die berühmten Pannonischen Seen erkunden möchten — unsere Wohnung bietet alles für einen angenehmen und bequemen Aufenthalt.',
+  'about.p2': 'Die Wohnung ist voll ausgestattet und liebevoll vorbereitet — ein sauberer, moderner Raum mit zuverlässigem WLAN und allem Nötigen. Ideal für Touristen, Geschäftsreisende und alle, die einen ruhigen Ort in der Nähe von Restaurants, Geschäften und Sehenswürdigkeiten suchen.',
+  'about.sign': 'Wir freuen uns auf Ihren Besuch.',
+  'rooms.eyebrow': 'Die Zimmer', 'rooms.title': 'Raum zum Ausruhen, Raum zum Entspannen.',
+  'rooms.queen.title': 'Schlafzimmer mit Queen-Size-Bett',
+  'rooms.queen.text': 'Ein bequemes Bett (160×200 cm) für erholsamen Schlaf — perfekt für Paare oder Geschäftsreisende.',
+  'rooms.double.title': 'Schlafzimmer mit Doppelbett',
+  'rooms.double.text': 'Ein Doppelbett (140×200 cm) in einem hellen Zimmer mit warmer, gemütlicher Beleuchtung — ideal für Paare oder Freunde.',
+  'rooms.living.title': 'Wohnzimmer mit Ecksofa',
+  'rooms.living.text': 'Ein geräumiges Ecksofa mit Schlaffunktion, Smart TV für Filme und Serien und viel Tageslicht — der perfekte Ort nach einem Tag in der Stadt.',
+  'chip.guests2': '2 Gäste', 'chip.wifi': 'Schnelles WLAN', 'chip.ac': 'Klimaanlage', 'chip.light': 'Viel Tageslicht', 'chip.sofabed': 'Schlafsofa',
+  'am.eyebrow': 'Ausstattung', 'am.title': 'Alles, was Sie brauchen — nichts Überflüssiges.',
+  'am.wifi.t': 'Schnelles WLAN', 'am.wifi.d': 'Schnell und zuverlässig, in jedem Raum.',
+  'am.ac.t': 'Klimaanlage', 'am.ac.d': 'Heizen und Kühlen das ganze Jahr.',
+  'am.tv.d': 'TV-Sender und Streaming-Dienste.',
+  'am.kitchen.t': 'Ausgestattete Küche', 'am.kitchen.d': 'Kochen wie zu Hause.',
+  'am.bath.t': 'Modernes Bad', 'am.bath.d': 'Sauber, hell, frische Handtücher.',
+  'am.light.t': 'Helle Räume', 'am.light.d': 'Viel natürliches Tageslicht.',
+  'gal.eyebrow': 'Galerie', 'gal.title': 'Schauen Sie sich um.',
+  'loc.eyebrow': 'Lage', 'loc.title': 'Im Herzen von Tuzla.', 'loc.text': 'Vor der Haustür beginnt das Stadtzentrum. Alles Wichtige ist ganz in der Nähe:',
+  'loc.lakes': 'Pannonische Seen', 'loc.center': 'Altstadt & Stadtzentrum', 'loc.food': 'Restaurants, Cafés & Geschäfte',
+  'loc.airport': 'Internationaler Flughafen Tuzla', 'loc.directions': 'In Google Maps öffnen',
+  'book.eyebrow': 'Aufenthalt buchen', 'book.title': 'Ab 49€ pro Nacht.',
+  'book.sub': 'Buchen Sie über die Plattform Ihrer Wahl — oder schreiben Sie uns direkt auf WhatsApp für den besten Preis.',
+  'book.direct': 'Direkt · bester Preis', 'book.platform': 'Plattform', 'book.instant': 'Bewertungen & sichere Zahlung',
+  'book.form': 'Lieber per Formular?', 'book.formLink': 'Buchungsanfrage senden →',
+  'footer.text': 'Moderne Wohnung im Stadtzentrum von Tuzla.',
+};
+
+const DICTS = { en: EN, bs: BS, de: DE };
+const LANGS = Object.keys(DICTS);
+
+function setLang(lang, manual = false) {
+  const dict = DICTS[lang] || EN;
   document.querySelectorAll('[data-i18n]').forEach((el) => {
-    const v = dict[el.dataset.i18n]; if (v) el.textContent = v;
+    const v = dict[el.dataset.i18n] || EN[el.dataset.i18n]; if (v) el.textContent = v;
   });
   document.querySelectorAll('[data-i18n-html]').forEach((el) => {
-    const v = dict[el.dataset.i18nHtml]; if (v) el.innerHTML = v;
+    const v = dict[el.dataset.i18nHtml] || EN[el.dataset.i18nHtml]; if (v) el.innerHTML = v;
   });
   document.documentElement.lang = lang;
-  langBtn.textContent = lang === 'bs' ? 'EN' : 'BS';
-  try { localStorage.setItem('lang', lang); } catch {}
+  document.title = ({ en: 'Premium Tuzla Apartment · City Center Stay', bs: 'Premium Tuzla Apartman · smještaj u centru Tuzle', de: 'Premium Tuzla Apartment · Unterkunft im Zentrum' })[lang] || document.title;
+  document.querySelectorAll('.lang-switch button').forEach((b) => {
+    b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
+  });
+  if (manual) { try { localStorage.setItem('lang', lang); } catch {} }
 }
-let saved = null;
-try { saved = localStorage.getItem('lang'); } catch {}
-const browserBs = /^(bs|hr|sr|sh)/i.test(navigator.language || '');
-let current = saved || (browserBs ? 'bs' : 'en');
-setLang(current);
-langBtn.addEventListener('click', () => { current = current === 'bs' ? 'en' : 'bs'; setLang(current); });
+
+// Visitor language: ?lang=xx > own earlier choice > browser languages > English
+function detectLang() {
+  const param = new URLSearchParams(location.search).get('lang');
+  if (param && LANGS.includes(param)) return param;
+  try { const saved = localStorage.getItem('lang'); if (saved && LANGS.includes(saved)) return saved; } catch {}
+  const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'en'];
+  for (const l of prefs) {
+    const code = String(l).toLowerCase().split('-')[0];
+    if (['bs', 'hr', 'sr', 'sh', 'cnr', 'sl', 'mk'].includes(code)) return 'bs';
+    if (code === 'de') return 'de';
+    if (code === 'en') return 'en';
+  }
+  return 'en';
+}
+
+setLang(detectLang());
+document.querySelectorAll('.lang-switch button').forEach((b) => {
+  b.addEventListener('click', () => setLang(b.dataset.lang, true));
+});
 
 // ---------- Nav background on scroll ----------
 const nav = document.querySelector('.nav');

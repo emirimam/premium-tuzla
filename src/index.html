@@ -42,7 +42,11 @@
       <a href="#location" data-i18n="nav.location">Location</a>
     </nav>
     <div class="nav-actions">
-      <button class="lang" id="lang" type="button" aria-label="Change language">BS</button>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="bs" aria-pressed="false">BS</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+      </div>
       <a href="#book" class="btn btn-small" data-i18n="nav.book">Book now</a>
     </div>
   </header>
