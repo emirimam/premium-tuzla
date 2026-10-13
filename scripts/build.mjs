@@ -57,7 +57,7 @@ for (const img of images) {
 }
 
 // Social preview image (1200×630)
-await enhance(sharp(await download(images[0])))
+await enhance(sharp(await download(images.find((i) => i.name === 'queen-2'))))
   .resize({ width: 1200, height: 630, fit: 'cover', position: sharp.strategy.attention })
   .jpeg({ quality: 82 })
   .toFile(path.join(out, 'og.jpg'));
