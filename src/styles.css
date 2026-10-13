@@ -81,7 +81,7 @@ h3 { font-size: clamp(1.5rem, 2.4vw, 2rem); }
 .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; color: #fff; overflow: hidden; }
 .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); animation: heroZoom 14s ease-out forwards; }
 @keyframes heroZoom { to { transform: scale(1); } }
-.hero-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,20,17,.45) 0%, rgba(15,20,17,.1) 35%, rgba(15,20,17,.75) 100%); }
+.hero-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(15,20,17,.72) 0%, rgba(15,20,17,.45) 45%, rgba(15,20,17,.05) 80%), linear-gradient(180deg, rgba(15,20,17,.45) 0%, rgba(15,20,17,0) 30%, rgba(15,20,17,.55) 100%); }
 .hero-content { position: relative; z-index: 2; max-width: var(--max); width: 100%; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 3rem) clamp(4rem, 10vh, 7rem); }
 .hero h1 { font-size: clamp(2.8rem, 7.5vw, 6rem); font-weight: 400; max-width: 12ch; }
 .hero-sub { max-width: 46ch; font-size: clamp(1rem, 1.4vw, 1.15rem); opacity: .9; margin: 1.4rem 0 2rem; }
@@ -156,7 +156,9 @@ h3 { font-size: clamp(1.5rem, 2.4vw, 2rem); }
 .loc-text > p { color: var(--ink-soft); }
 .near { list-style: none; padding: 0; margin: 1.5rem 0 2rem; }
 .near li { display: flex; gap: .9rem; align-items: center; padding: .85rem 0; border-bottom: 1px solid var(--line); }
-.map { border-radius: var(--radius); overflow: hidden; height: 460px; box-shadow: 0 30px 60px rgba(31,42,36,.15); }
+.loc-media { display: grid; gap: .8rem; }
+.loc-photo { width: 100%; height: 240px; object-fit: cover; border-radius: var(--radius); cursor: zoom-in; }
+.map { border-radius: var(--radius); overflow: hidden; height: 300px; box-shadow: 0 30px 60px rgba(31,42,36,.15); }
 .map iframe { width: 100%; height: 100%; border: 0; filter: saturate(.85); }
 
 /* Book */
@@ -234,7 +236,8 @@ h3 { font-size: clamp(1.5rem, 2.4vw, 2rem); }
   .room-media img:nth-child(2) { display: none; }
   .am-grid { grid-template-columns: 1fr; }
   .gal-grid { grid-auto-rows: 160px; gap: .5rem; }
-  .map { height: 340px; }
+  .map { height: 280px; }
+  .loc-photo { height: 200px; }
   .nav-actions .btn-small { display: none; }
-  .hero-cta .btn { flex: 1; justify-content: center; }
+  .hero-cta .btn { flex: 1; justify-content: center; padding: .85rem 1rem; font-size: .88rem; text-align: center; }
 }

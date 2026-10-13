@@ -92,7 +92,7 @@ function show(step) {
 }
 function close() { lb.hidden = true; document.body.style.overflow = ''; }
 items.forEach((b) => b.addEventListener('click', () => open(b.dataset.full, b.querySelector('img').alt)));
-document.querySelectorAll('.room-media img').forEach((img) => img.addEventListener('click', () => open(img.dataset.full, img.alt)));
+document.querySelectorAll('.room-media img, .loc-photo').forEach((img) => img.addEventListener('click', () => open(img.dataset.full, img.alt)));
 lb.querySelector('.lb-close').addEventListener('click', close);
 lb.querySelector('.lb-prev').addEventListener('click', () => show(-1));
 lb.querySelector('.lb-next').addEventListener('click', () => show(1));

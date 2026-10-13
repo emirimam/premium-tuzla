@@ -1,64 +1,44 @@
-// Build: copy src/ to dist/, download the apartment photos and optimise them.
-// Photos are cropped to consistent ratios, gently brightened, sharpened and
-// saved as WebP in two sizes (large + thumbnail).
-import { mkdir, cp, writeFile, access } from 'node:fs/promises';
+// Build: copy src/ to dist/ and optimise the apartment photos from photos/.
+// Each photo is gently brightened, sharpened and saved as WebP in two sizes:
+// a large version (max 2000px) and a 4:3 thumbnail cropped to the most
+// interesting part of the image.
+import { mkdir, cp, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
-import { resolveImages } from './images.mjs';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const photos = path.join(root, 'photos');
 const dist = path.join(root, 'dist');
 const out = path.join(dist, 'img');
-const cache = path.join(root, '.cache');
 
 await mkdir(out, { recursive: true });
-await mkdir(cache, { recursive: true });
 await cp(path.join(root, 'src'), dist, { recursive: true });
-const { images, headers } = await resolveImages();
 
-async function download(img) {
-  const file = path.join(cache, `${img.name}.orig`);
-  try { await access(file); return file; } catch {}
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const res = await fetch(img.url, { redirect: 'follow', headers });
-    if (res.ok) {
-      await writeFile(file, Buffer.from(await res.arrayBuffer()));
-      return file;
-    }
-    console.warn(`  ${img.name}: HTTP ${res.status} (try ${attempt})`);
-    await new Promise((r) => setTimeout(r, 1000 * attempt));
-  }
-  throw new Error(`Could not download ${img.name}`);
-}
+const enhance = (file) => sharp(file)
+  .rotate()
+  .normalise({ lower: 1, upper: 99 })
+  .modulate({ brightness: 1.03, saturation: 1.05 })
+  .sharpen({ sigma: 0.7 });
 
-function enhance(pipeline) {
-  return pipeline
-    .rotate() // respect EXIF orientation
-    .normalise({ lower: 1, upper: 99 }) // lift flat phone exposure
-    .modulate({ brightness: 1.04, saturation: 1.06 })
-    .sharpen({ sigma: 0.8 });
-}
-
-for (const img of images) {
-  const src = await download(img);
-  const base = sharp(src);
-  const meta = await base.metadata();
-  // large: max 2000px wide, keep the photo's own framing
-  await enhance(sharp(src))
-    .resize({ width: Math.min(2000, meta.width || 2000), withoutEnlargement: true })
-    .webp({ quality: 80 })
-    .toFile(path.join(out, `${img.name}.webp`));
-  // thumbnail: 4:3 crop focused on the most interesting area
-  await enhance(sharp(src))
+const files = (await readdir(photos)).filter((f) => /\.(jpe?g|png|webp)$/i.test(f));
+for (const f of files) {
+  const name = f.replace(/\.[^.]+$/, '');
+  const src = path.join(photos, f);
+  const { width } = await sharp(src).metadata();
+  await enhance(src)
+    .resize({ width: Math.min(2000, width), withoutEnlargement: true })
+    .webp({ quality: 82 })
+    .toFile(path.join(out, `${name}.webp`));
+  await enhance(src)
     .resize({ width: 900, height: 675, fit: 'cover', position: sharp.strategy.attention })
-    .webp({ quality: 76 })
-    .toFile(path.join(out, `${img.name}-sm.webp`));
-  console.log(`✓ ${img.name} (${meta.width}×${meta.height})`);
+    .webp({ quality: 78 })
+    .toFile(path.join(out, `${name}-sm.webp`));
+  console.log(`✓ ${name}`);
 }
 
 // Social preview image (1200×630)
-await enhance(sharp(await download(images.find((i) => i.name === 'queen-2'))))
-  .resize({ width: 1200, height: 630, fit: 'cover', position: sharp.strategy.attention })
+await enhance(path.join(photos, 'hero.jpg'))
+  .resize({ width: 1200, height: 630, fit: 'cover', position: 'centre' })
   .jpeg({ quality: 82 })
   .toFile(path.join(out, 'og.jpg'));
 
