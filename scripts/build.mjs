@@ -4,7 +4,7 @@
 import { mkdir, cp, writeFile, access } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
-import { images } from './images.mjs';
+import { resolveImages } from './images.mjs';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const dist = path.join(root, 'dist');
@@ -14,12 +14,13 @@ const cache = path.join(root, '.cache');
 await mkdir(out, { recursive: true });
 await mkdir(cache, { recursive: true });
 await cp(path.join(root, 'src'), dist, { recursive: true });
+const { images, headers } = await resolveImages();
 
 async function download(img) {
   const file = path.join(cache, `${img.name}.orig`);
   try { await access(file); return file; } catch {}
   for (let attempt = 1; attempt <= 3; attempt++) {
-    const res = await fetch(img.url, { redirect: 'follow' });
+    const res = await fetch(img.url, { redirect: 'follow', headers });
     if (res.ok) {
       await writeFile(file, Buffer.from(await res.arrayBuffer()));
       return file;
